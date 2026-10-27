@@ -1,0 +1,16 @@
+$kind: http-request
+name: http://localhost:8080/user
+description: ""
+url: http://localhost:8080/user
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "name": "Rıdvan",
+      "surname": "Dikmen",
+      "email": "ridvandikmen1997@gmail.com",
+      "phone": "5318119720",
+      "password":"111111"
+    }
+order: 20940847260054

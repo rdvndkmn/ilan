@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:8080/user
+description: ""
+url: http://localhost:8080/user
+method: GET
+headers:
+  name: '"deniz"'
+  surname: '"sarpkaya"'
+  email: '"dd@"'
+  phone: '"qqqqqq"'
+body:
+  type: json
+  content: ""
+auth:
+  type: basic
+  credentials:
+    username: user
+    password: 77a3d5b6-4162-4128-a8c7-bcb08cd33e73
+order: 1790973827655
