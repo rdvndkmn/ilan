@@ -14,5 +14,6 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     List<Advertisement> findByPriceGreaterThanEqual(BigDecimal minPrice);
     List<Advertisement> findByPriceLessThanEqual(BigDecimal maxPrice);
     List<Advertisement> findTop10ByStatusOrderByCreatedAtDesc(AdStatus adStatus);
+    List<Advertisement> findByStatus(AdStatus adStatus);
 
 }

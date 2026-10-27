@@ -2,8 +2,11 @@ package com.rdvn.ilan.controller;
 
 import com.rdvn.ilan.dto.AdCreateRequest;
 import com.rdvn.ilan.dto.AdUpdateRequest;
+import com.rdvn.ilan.dto.AdminAdResponse;
 import com.rdvn.ilan.entity.Advertisement;
+import com.rdvn.ilan.enums.AdStatus;
 import com.rdvn.ilan.service.AdService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -42,6 +45,7 @@ public class AdController {
     public List<Advertisement> latestAdvertisements(){
         return adService.latestAdvertisements();
     }
+
 
 
 }

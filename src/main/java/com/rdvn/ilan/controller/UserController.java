@@ -62,11 +62,7 @@ public class UserController {
         return userService.saveUserRegisterRequest(userRegisterRequest);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/api/admin/test")
-    public String getAdmin(){
-        return userService.getAdmin();
-    }
+
 
     /**
     @GetMapping(value = "/user", params = "name")

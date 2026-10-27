@@ -2,6 +2,8 @@ package com.rdvn.ilan.service;
 
 import com.rdvn.ilan.dto.AdCreateRequest;
 import com.rdvn.ilan.dto.AdUpdateRequest;
+import com.rdvn.ilan.dto.AdminAdResponse;
+import com.rdvn.ilan.dto.UserSummaryResponse;
 import com.rdvn.ilan.entity.Advertisement;
 import com.rdvn.ilan.entity.User;
 import com.rdvn.ilan.enums.AdStatus;
@@ -17,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,5 +149,61 @@ public class AdService {
     public List<Advertisement> latestAdvertisements(){
         List<Advertisement> advertisementsList = advertisementRepository.findTop10ByStatusOrderByCreatedAtDesc(AdStatus.APPROVED);
        return advertisementsList;
+    }
+
+    public List<AdminAdResponse> getStatus(){
+        List<Advertisement> advertisementsList = advertisementRepository.findByStatus(AdStatus.PASSIVE);
+        List<AdminAdResponse> adminAdResponseList = new ArrayList<>();
+        for (Advertisement advertisement : advertisementsList) {
+
+            UserSummaryResponse userSummaryResponse = new UserSummaryResponse();
+
+            userSummaryResponse.setFirstName(advertisement.getUser().getName());
+            userSummaryResponse.setLastName(advertisement.getUser().getSurname());
+            userSummaryResponse.setEmail(advertisement.getUser().getEmail());
+
+            AdminAdResponse adminAdResponse = new AdminAdResponse();
+
+            adminAdResponse.setId(advertisement.getId());
+            adminAdResponse.setTitle(advertisement.getTitle());
+            adminAdResponse.setDescription(advertisement.getDescription());
+            adminAdResponse.setPrice(advertisement.getPrice());
+            adminAdResponse.setCity(advertisement.getCity());
+            adminAdResponse.setCategory(advertisement.getCategory());
+            adminAdResponse.setAdStatus(advertisement.getStatus());
+            adminAdResponse.setCreatedAt(advertisement.getCreatedAt());
+            adminAdResponse.setUser(userSummaryResponse);
+
+
+            adminAdResponseList.add(adminAdResponse);
+
+
+
+        }
+        return adminAdResponseList;
+    }
+
+    public Advertisement approveAd(Long id){
+        Optional<Advertisement> advertisement = advertisementRepository.findById(id);
+        if (advertisement.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "İlan bulunamadı"
+            );
+        }
+        Advertisement advertisement1 = advertisement.get();
+        if (advertisement1.getStatus() == AdStatus.PASSIVE ){
+            advertisement1.setStatus(AdStatus.APPROVED);
+            advertisementRepository.save(advertisement1);
+            return advertisement1;
+
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Bu ilan onaylanabilir durumda değil"
+            );
+        }
+
     }
 }

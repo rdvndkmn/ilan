@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                        .requestMatchers("/api/admin/ads/passive").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
