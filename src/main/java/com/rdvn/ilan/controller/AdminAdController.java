@@ -37,4 +37,9 @@ public class AdminAdController {
     public Advertisement approveAd(@PathVariable("id") long id){
         return adService.approveAd(id);
     }
+
+    @PutMapping("/api/admin/ads/{id}/reject")
+    public Advertisement rejectAd(@PathVariable("id") Long id){
+        return adService.rejectAd(id);
+    }
 }

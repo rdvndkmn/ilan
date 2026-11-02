@@ -7,6 +7,8 @@ import com.rdvn.ilan.dto.UserSummaryResponse;
 import com.rdvn.ilan.entity.Advertisement;
 import com.rdvn.ilan.entity.User;
 import com.rdvn.ilan.enums.AdStatus;
+import com.rdvn.ilan.exception.AdNotFoundException;
+import com.rdvn.ilan.exception.InvalidAdStatusException;
 import com.rdvn.ilan.repository.AdvertisementRepository;
 import com.rdvn.ilan.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -92,24 +94,15 @@ public class AdService {
                         "Bu ilanı güncelleme yetkiniz yok"
                 );
             }
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Kullanıcı bulunamadı"
-            );
+            throw new AdNotFoundException("Kullanıcı bulunamadı");
         }
-        throw new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "İlan bulunamadı"
-        );
+        throw new AdNotFoundException("İlan bulunamadı");
     }
 
     public Advertisement getId(Long id){
         Optional<Advertisement> advertisement = advertisementRepository.findById(id);
         if (advertisement.isEmpty()){
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "İlan bulunamadı"
-            );
+            throw new AdNotFoundException("İlan bulunamadı");
         }
         Advertisement advertisement1 = advertisement.get();
         int newView= advertisement1.getViewCount() +1;
@@ -186,10 +179,7 @@ public class AdService {
     public Advertisement approveAd(Long id){
         Optional<Advertisement> advertisement = advertisementRepository.findById(id);
         if (advertisement.isEmpty()){
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "İlan bulunamadı"
-            );
+            throw new AdNotFoundException("İlan bulunamadı");
         }
         Advertisement advertisement1 = advertisement.get();
         if (advertisement1.getStatus() == AdStatus.PASSIVE ){
@@ -205,5 +195,24 @@ public class AdService {
             );
         }
 
+    }
+
+    public Advertisement rejectAd(Long id){
+        Optional<Advertisement> advertisement = advertisementRepository.findById(id);
+        if (advertisement.isEmpty()){
+            throw new AdNotFoundException("İlan bulunamadı");
+        }
+        Advertisement advertisement1 = advertisement.get();
+        if (advertisement1.getStatus() == AdStatus.PASSIVE){
+            advertisement1.setStatus(AdStatus.REJECTED);
+            advertisementRepository.save(advertisement1);
+            return advertisement1;
+
+        }
+        else{
+            throw new InvalidAdStatusException(
+                    "Bu ilan onaylanabilir durumda değil"
+            );
+        }
     }
 }
