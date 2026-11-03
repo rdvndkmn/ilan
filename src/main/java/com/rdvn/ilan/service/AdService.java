@@ -1,5 +1,7 @@
 package com.rdvn.ilan.service;
 
+import com.rabbitmq.client.AMQP;
+import com.rdvn.ilan.config.RabbitMQConfig;
 import com.rdvn.ilan.dto.AdCreateRequest;
 import com.rdvn.ilan.dto.AdUpdateRequest;
 import com.rdvn.ilan.dto.AdminAdResponse;
@@ -11,6 +13,7 @@ import com.rdvn.ilan.exception.AdNotFoundException;
 import com.rdvn.ilan.exception.InvalidAdStatusException;
 import com.rdvn.ilan.repository.AdvertisementRepository;
 import com.rdvn.ilan.repository.UserRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -30,10 +33,12 @@ import java.util.Optional;
 public class AdService {
     private final AdvertisementRepository advertisementRepository;
     private final UserRepository userRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public AdService(AdvertisementRepository advertisementRepository,UserRepository userRepository){
+    public AdService(AdvertisementRepository advertisementRepository,UserRepository userRepository,RabbitTemplate rabbitTemplate){
         this.advertisementRepository=advertisementRepository;
         this.userRepository=userRepository;
+        this.rabbitTemplate= rabbitTemplate;
     }
 
 
@@ -185,6 +190,7 @@ public class AdService {
         if (advertisement1.getStatus() == AdStatus.PASSIVE ){
             advertisement1.setStatus(AdStatus.APPROVED);
             advertisementRepository.save(advertisement1);
+            rabbitTemplate.convertAndSend("ad-approval-queue",id);
             return advertisement1;
 
         }
