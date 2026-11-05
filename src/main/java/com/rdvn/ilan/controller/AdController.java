@@ -1,12 +1,10 @@
 package com.rdvn.ilan.controller;
 
 import com.rdvn.ilan.dto.AdCreateRequest;
+import com.rdvn.ilan.dto.ReportAdDetailResponse;
 import com.rdvn.ilan.dto.AdUpdateRequest;
-import com.rdvn.ilan.dto.AdminAdResponse;
 import com.rdvn.ilan.entity.Advertisement;
-import com.rdvn.ilan.enums.AdStatus;
 import com.rdvn.ilan.service.AdService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,6 +32,13 @@ public class AdController {
     public Advertisement getId(@PathVariable("id") Long id){
         return adService.getId(id);
     }
+
+    @GetMapping("/api/internal/ads/{id}/report-detail")
+    public ReportAdDetailResponse getAdDetailId(@PathVariable("id") Long id){
+        return adService.getAdDetailId(id);
+    }
+
+
 
     @GetMapping("/api/ads")
     public List<Advertisement> filterAdvertisements(@RequestParam(required = false) String city,@RequestParam(required = false) BigDecimal minPrice,@RequestParam(required = false) BigDecimal maxPrice){

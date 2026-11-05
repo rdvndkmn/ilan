@@ -1,11 +1,6 @@
 package com.rdvn.ilan.service;
 
-import com.rabbitmq.client.AMQP;
-import com.rdvn.ilan.config.RabbitMQConfig;
-import com.rdvn.ilan.dto.AdCreateRequest;
-import com.rdvn.ilan.dto.AdUpdateRequest;
-import com.rdvn.ilan.dto.AdminAdResponse;
-import com.rdvn.ilan.dto.UserSummaryResponse;
+import com.rdvn.ilan.dto.*;
 import com.rdvn.ilan.entity.Advertisement;
 import com.rdvn.ilan.entity.User;
 import com.rdvn.ilan.enums.AdStatus;
@@ -115,6 +110,20 @@ public class AdService {
         advertisementRepository.save(advertisement1);
         return advertisement1;
 
+    }
+
+    public ReportAdDetailResponse getAdDetailId(Long id){
+        Optional<Advertisement> advertisement = advertisementRepository.findById(id);
+        if (advertisement.isEmpty()){
+            throw new AdNotFoundException("İlan bulunamadı");
+        }
+        Advertisement advertisement1 = advertisement.get();
+        ReportAdDetailResponse adDetailResponse = new ReportAdDetailResponse();
+        adDetailResponse.setTitle(advertisement1.getTitle());
+        adDetailResponse.setUserName(advertisement1.getUser().getName());
+        adDetailResponse.setCreatedAt(advertisement1.getCreatedAt());
+        adDetailResponse.setViewCount(advertisement1.getViewCount());
+        return adDetailResponse;
     }
 
     public List<Advertisement> filterAdvertisements(String city, BigDecimal minPrice , BigDecimal maxPrice){

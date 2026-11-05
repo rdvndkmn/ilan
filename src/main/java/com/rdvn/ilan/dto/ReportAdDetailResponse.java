@@ -2,14 +2,14 @@ package com.rdvn.ilan.dto;
 
 import java.time.LocalDateTime;
 
-public class AdDetailResponse {
+public class ReportAdDetailResponse {
     private String title;
     private String userName;
     private LocalDateTime createdAt;
     private int viewCount;
 
-    public AdDetailResponse(){}
-    public AdDetailResponse(String title,String userName, LocalDateTime createdAt,int viewCount){
+    public ReportAdDetailResponse(){}
+    public ReportAdDetailResponse(String title, String userName, LocalDateTime createdAt, int viewCount){
         this.title = title;
         this.userName = userName;
         this.createdAt = createdAt;
