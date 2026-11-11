@@ -1,5 +1,6 @@
 package com.rdvn.ilan.controller;
 
+import com.rdvn.ilan.dto.CurrentUserResponse;
 import com.rdvn.ilan.entity.User;
 import com.rdvn.ilan.dto.UserRegisterRequest;
 import com.rdvn.ilan.enums.Role;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
+import com.rdvn.ilan.dto.CurrentUserResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class UserController {
@@ -60,6 +63,21 @@ public class UserController {
     @PostMapping("/api/users/register")
     public String resigterSave(@RequestBody UserRegisterRequest userRegisterRequest){
         return userService.saveUserRegisterRequest(userRegisterRequest);
+    }
+
+    @GetMapping("/api/users/me")
+    public CurrentUserResponse getCurrentUser(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        String role = authentication.getAuthorities()
+                .stream()
+                .findFirst()
+                .orElseThrow()
+                .getAuthority()
+                .replace("ROLE_", "");
+
+        return new CurrentUserResponse(email, role);
     }
 
 
